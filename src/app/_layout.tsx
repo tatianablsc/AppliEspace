@@ -35,6 +35,7 @@ export default function Layout() {
         name="photo"
         options={{
           title: "Photo",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="image-outline" size={size} color={color as string} />
           ),
