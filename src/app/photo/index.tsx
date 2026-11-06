@@ -1,20 +1,36 @@
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   Image,
+  Platform,
   Pressable,
   Text,
   View,
 } from "react-native";
 import { getPhotosRecentes, PhotoDuJour } from "../../api/nasa";
 
+const PREMIER_JOUR = new Date(1995, 5, 16);
+
+function formaterDate(d: Date): string {
+  const annee = d.getFullYear();
+  const mois = String(d.getMonth() + 1).padStart(2, "0");
+  const jour = String(d.getDate()).padStart(2, "0");
+  return `${annee}-${mois}-${jour}`;
+}
+
+function ouvrirDetail(date: string) {
+  router.push({ pathname: "/photo/[date]", params: { date } });
+}
+
 export default function Galerie() {
   const [photos, setPhotos] = useState<PhotoDuJour[]>([]);
   const [page, setPage] = useState(0);
   const [chargement, setChargement] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
+  const [afficherCalendrier, setAfficherCalendrier] = useState(false);
   const enCours = useRef(false);
 
   function chargerPageSuivante() {
@@ -48,15 +64,41 @@ export default function Galerie() {
       data={photos}
       keyExtractor={(item) => item.date}
       contentContainerStyle={{ padding: 16, gap: 20 }}
+      ListHeaderComponent={
+        <View style={{ gap: 12 }}>
+          <Pressable
+            onPress={() => setAfficherCalendrier(!afficherCalendrier)}
+            style={{
+              backgroundColor: "#007AFF",
+              paddingVertical: 10,
+              paddingHorizontal: 16,
+              borderRadius: 8,
+              alignSelf: "flex-start",
+            }}
+          >
+            <Text style={{ color: "white", fontWeight: "bold" }}>
+              {afficherCalendrier ? "Fermer le calendrier" : "Aller à une date"}
+            </Text>
+          </Pressable>
+          {afficherCalendrier && (
+            <DateTimePicker
+              value={new Date()}
+              mode="date"
+              display={Platform.OS === "ios" ? "inline" : "default"}
+              minimumDate={PREMIER_JOUR}
+              maximumDate={new Date()}
+              onChange={(evenement, dateChoisie) => {
+                setAfficherCalendrier(false);
+                if (evenement.type === "set" && dateChoisie) {
+                  ouvrirDetail(formaterDate(dateChoisie));
+                }
+              }}
+            />
+          )}
+        </View>
+      }
       renderItem={({ item }) => (
-        <Pressable
-          onPress={() =>
-            router.push({
-              pathname: "/photo/[date]",
-              params: { date: item.date },
-            })
-          }
-        >
+        <Pressable onPress={() => ouvrirDetail(item.date)}>
           <Image
             source={{ uri: item.url }}
             style={{ width: "100%", aspectRatio: 1, borderRadius: 12 }}
