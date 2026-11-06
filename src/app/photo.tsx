@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Image, ScrollView, Text, View } from "react-native";
+import {
+    ActivityIndicator,
+    Image,
+    Pressable,
+    ScrollView,
+    Text,
+    View,
+} from "react-native";
 import { getPhotoDuJour, PhotoDuJour } from "../api/nasa";
 
 export default function Photo() {
@@ -7,11 +14,22 @@ export default function Photo() {
   const [chargement, setChargement] = useState(true);
   const [erreur, setErreur] = useState<string | null>(null);
 
-  useEffect(() => {
+  function charger() {
+    setChargement(true);
+    setErreur(null);
     getPhotoDuJour()
       .then((donnees) => setPhoto(donnees))
-      .catch((e) => setErreur(String(e)))
+      .catch((e) => {
+        console.log(e);
+        setErreur(
+          "Impossible de charger la photo du jour. Vérifie ta connexion Internet."
+        );
+      })
       .finally(() => setChargement(false));
+  }
+
+  useEffect(() => {
+    charger();
   }, []);
 
   if (chargement) {
@@ -24,8 +42,26 @@ export default function Photo() {
 
   if (erreur || !photo) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>{erreur}</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 24,
+        }}
+      >
+        <Text style={{ textAlign: "center", marginBottom: 16 }}>{erreur}</Text>
+        <Pressable
+          onPress={charger}
+          style={{
+            backgroundColor: "#007AFF",
+            paddingVertical: 12,
+            paddingHorizontal: 24,
+            borderRadius: 8,
+          }}
+        >
+          <Text style={{ color: "white", fontWeight: "bold" }}>Réessayer</Text>
+        </Pressable>
       </View>
     );
   }
