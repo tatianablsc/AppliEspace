@@ -9,7 +9,7 @@ export default function Layout() {
         options={{
           title: "Ciel",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="planet-outline" size={size} color={color} />
+            <Ionicons name="planet-outline" size={size} color={color as string} />
           ),
         }}
       />
@@ -18,7 +18,7 @@ export default function Layout() {
         options={{
           title: "Viseur",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="compass-outline" size={size} color={color} />
+            <Ionicons name="compass-outline" size={size} color={color as string} />
           ),
         }}
       />
@@ -27,7 +27,7 @@ export default function Layout() {
         options={{
           title: "ISS",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="globe-outline" size={size} color={color} />
+            <Ionicons name="globe-outline" size={size} color={color as string} />
           ),
         }}
       />
@@ -36,7 +36,7 @@ export default function Layout() {
         options={{
           title: "Photo",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="image-outline" size={size} color={color} />
+            <Ionicons name="image-outline" size={size} color={color as string} />
           ),
         }}
       />
@@ -45,7 +45,7 @@ export default function Layout() {
         options={{
           title: "Lancements",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="rocket-outline" size={size} color={color} />
+            <Ionicons name="rocket-outline" size={size} color={color as string} />
           ),
         }}
       />
